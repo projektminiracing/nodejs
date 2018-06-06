@@ -130,10 +130,15 @@ router.get('/simulate', function(req, res){
 							}
 							else{
 								_vehicles = v;
-								var casi = [];
 								var st_odsekov = 8;
+								var RaceSimulation = new Race({
+									sections: new Array(st_odsekov),
+									track: _track,
+									drivers: _drivers,
+									vehicles: _vehicles
+								});
 								for(j = 0; j < st_odsekov; j++){ //gre skozi odseke 
-									casi[j] = [];
+									RaceSimulation["sections"][j] = new Array(3);
 									for(i = 0; i < 3; i++){ //gre skozi igralce
 										var imeVoznika = _drivers[i]['name'];
 										var ocenaVoznika;
@@ -184,16 +189,13 @@ router.get('/simulate', function(req, res){
 						
 										var hitrostModifier = faktorMateriala * faktorKota * (pospesek/10  * motorKonji/100 * overall/100);
 										var casVoznika = dolzinaOdseka / (najvecjaHitrost * hitrostModifier);
-										casi[j][i] = casVoznika;
+										RaceSimulation["sections"][j][i] = casVoznika;
 										if(Math.random() > overtaking){ //je prehitel nekoga
-											casi[j][i] -= (dolzinaOdseka/najvecjaHitrost)/2;
+											RaceSimulation["sections"][j][i] -= (dolzinaOdseka/najvecjaHitrost)/2;
 										}
 									}
 								}
-
-								res.json(casi);
-
-
+								res.json(RaceSimulation);
 							}
 						});
 					}
